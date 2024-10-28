@@ -1,4 +1,4 @@
-package com.apnamart.geofencingmodule.geofencing
+package com.apnamart.geofencingmodule
 
 import android.Manifest
 import android.content.Context
