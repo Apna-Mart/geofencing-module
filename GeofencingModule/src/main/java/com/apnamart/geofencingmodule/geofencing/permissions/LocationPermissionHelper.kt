@@ -35,57 +35,6 @@ object LocationPermissionHelper {
         return true
     }
 
-    /**
-     * Requests the necessary location permissions.
-     *
-     * @param activity The activity context from which permissions are requested.
-     * @param missingPermissions List of missing permissions to request.
-     * @param callback Callback to handle permission results.
-     * @param customDenialHandler Optional custom handler for when permissions are denied.
-     */
-    fun requestLocationPermissions(
-        activity: Activity,
-        missingPermissions: List<String>,
-        callback: PermissionCallback,
-        customDenialHandler: (() -> Unit)? = null
-    ) {
-        // If there are missing permissions, request them
-        if (missingPermissions.isNotEmpty()) {
-            ActivityCompat.requestPermissions(
-                activity,
-                missingPermissions.toTypedArray(),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-        } else {
-            // Invoke the callback if all permissions are granted
-            callback.onPermissionGranted()
-        }
-    }
-
-    /**
-     * Handles the result of the permission request.
-     *
-     * @param requestCode The request code returned in onRequestPermissionsResult.
-     * @param grantResults The results of the requested permissions.
-     * @param callback Callback to handle permission results.
-     */
-    fun handlePermissionResult(
-        requestCode: Int,
-        grantResults: IntArray,
-        callback: PermissionCallback,
-    ) {
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            // Check if the permissions were granted
-            val allPermissionsGranted = grantResults.isNotEmpty() &&
-                    grantResults.all { it == PackageManager.PERMISSION_GRANTED }
-            if (allPermissionsGranted) {
-                callback.onPermissionGranted() // Invoke callback on permission granted
-            } else {
-                callback.onPermissionDenied() // Invoke the default permission denied callback
-            }
-        }
-    }
-
     private fun checkPermission(context: Context, permission: String): Boolean {
         return context.checkSelfPermission(
             permission

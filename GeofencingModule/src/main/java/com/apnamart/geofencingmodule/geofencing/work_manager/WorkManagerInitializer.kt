@@ -15,7 +15,6 @@ class WorkManagerInitializer(private val context: WeakReference<Context>) {
         context.get()?.let {
             try {
                 // Attempt to get the WorkManager instance
-                Log.e(TAG, "WorkManager initialized: already")
                 WorkManager.getInstance(it)
             } catch (e: IllegalStateException) {
                 Log.e(TAG, "WorkManager not initialized: ${e.message}")

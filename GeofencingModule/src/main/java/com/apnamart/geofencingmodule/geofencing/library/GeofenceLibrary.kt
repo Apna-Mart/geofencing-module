@@ -15,15 +15,12 @@ import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants.TAG
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants.WORKER_CLASS_NAME
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceManager
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceManagerImpl
-import com.apnamart.geofencingmodule.geofencing.di.AppModule
 import com.apnamart.geofencingmodule.geofencing.di.DaggerLibraryComponent
-import com.apnamart.geofencingmodule.geofencing.di.LibraryComponent
 import com.apnamart.geofencingmodule.geofencing.event_handler.GeofenceEventHandler
 import com.apnamart.geofencingmodule.geofencing.permissions.LocationPermissionHelper
 import com.apnamart.geofencingmodule.geofencing.provider.GeofenceDataProvider
 import com.apnamart.geofencingmodule.geofencing.work_manager.GeofenceWorker
 import com.apnamart.geofencingmodule.geofencing.work_manager.WorkManagerInitializer
-import com.apnamart.geofencingmodule.geofencing.work_manager.proxy_worker.ProxyWorker
 import dagger.multibindings.IntKey
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
@@ -44,36 +41,10 @@ object GeofenceLibrary {
 
         workManagerInitializer = WorkManagerInitializer(WeakReference(context))
 
-        Log.e(GeofenceConstants.TAG, "library initialised")
-//
-//        libraryComponent = DaggerLibraryComponent.builder()
-//            .appModule(AppModule(context, dataProvider, eventHandler))
-//            .build()
-//
-//        libraryComponent.inject(this)
-
         this.dataProvider = dataProvider
         this.eventHandler = eventHandler
 
-//        registerWorkerFactories(context)
-
-        // Schedule the GeofenceWorker to run every 15 minutes
         scheduleGeofenceWorker(context)
-    }
-
-
-    private fun registerWorkerFactories(context: Context) {
-        // Registering the GeofenceWorkerFactory
-        Log.e(GeofenceConstants.TAG, "library worker factory register")
-//        ProxyWorker.registerWorkerFactory(
-//            GeofenceWorker::class.qualifiedName!!,
-//            GeofenceWorkerFactory(
-//                GeofenceManagerImpl(context),
-//                dataProvider,
-//                LocationPermissionHelper
-//            )
-//        )
-        // Add other factories as needed
     }
 
     private fun scheduleGeofenceWorker(context: Context) {
@@ -81,25 +52,7 @@ object GeofenceLibrary {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        Log.d(GeofenceConstants.TAG, "library work request")
-
-//        val workerData = Data.Builder()
-//            .putString(WORKER_CLASS_NAME, GeofenceWorker::class.qualifiedName).build()
         val workManager = workManagerInitializer?.workManager
-//
-//        // Create the worker request with the factory method
-//        val workRequest = PeriodicWorkRequestBuilder<GeofenceWorker>(15, TimeUnit.MINUTES, 5, TimeUnit.MINUTES)
-//            .setConstraints(constraints)
-//            .addTag(GeofenceConstants.GEOFENCE_SERVICE_WORKER_JOB)
-//            .build()
-//
-//        workManager?.enqueueUniquePeriodicWork(
-//            GeofenceConstants.GEOFENCE_SERVICE_WORKER,
-//            ExistingPeriodicWorkPolicy.KEEP,
-//            workRequest
-//        )?: run {
-//            Log.e(TAG, "WorkManager instance is null")
-//        }
 
         workManager?.let {
             Log.e(TAG, "work manager not null")

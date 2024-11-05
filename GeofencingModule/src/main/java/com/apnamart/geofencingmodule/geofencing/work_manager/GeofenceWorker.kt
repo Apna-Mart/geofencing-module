@@ -14,7 +14,6 @@ import com.apnamart.geofencingmodule.geofencing.core.GeofenceManagerImpl
 import com.apnamart.geofencingmodule.geofencing.library.GeofenceLibrary
 import com.apnamart.geofencingmodule.geofencing.permissions.LocationPermissionHelper
 import com.apnamart.geofencingmodule.geofencing.provider.GeofenceDataProvider
-import com.apnamart.geofencingmodule.geofencing.work_manager.worker_factory.LibraryWorkerFactory
 import javax.inject.Inject
 
 class GeofenceWorker (
@@ -56,13 +55,4 @@ class GeofenceWorker (
     }
 
 }
-//class GeofenceWorkerFactory @Inject constructor(
-//    private val geofenceManager: GeofenceManager,
-//    private val geofenceDataProvider: GeofenceDataProvider,
-//    private val locationPermissionHelper: LocationPermissionHelper,
-//) :  LibraryWorkerFactory {
-//
-//    override fun create(appContext: Context, params: WorkerParameters): ListenableWorker {
-//        return GeofenceWorker(appContext, params, geofenceManager, geofenceDataProvider, locationPermissionHelper)
-//    }
-//}
+
