@@ -10,7 +10,6 @@ material = "1.12.0"
 playServicesLocation = "21.3.0"
 gradleVersion = "8.5.2"
 workRuntimeKtx = "2.9.1"
-daggerVersion = "2.52"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -22,7 +21,6 @@ gms-play-services-location = { module = "com.google.android.gms:play-services-lo
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 gradle-v851 = { module = "com.android.tools.build:gradle", version.ref = "gradleVersion" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
-dagger = {group = "com.google.dagger", name = "dagger", version.ref = "daggerVersion"}
 
 
 
