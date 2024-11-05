@@ -23,7 +23,8 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 
-        eventHandler = GeofenceLibrary.getEventHandler()
+        eventHandler = GeofenceLibrary.getEventHandler() ?: return
+
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
 
         if (geofencingEvent?.hasError() == true) {
