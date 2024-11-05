@@ -14,7 +14,6 @@ interface GeofenceManager {
      * @param pendingIntent PendingIntent that will be triggered when the geofence transitions occur.
      * @param onSuccess Callback invoked when geofences are added successfully.
      * @param onFailure Callback invoked when there is a failure in adding geofences.
-     * @param permissionCallback Callback to handle permission results.
      */
     fun addGeofences(
         geofences: List<GeofenceData>,
@@ -35,10 +34,8 @@ interface GeofenceManager {
      * Removes existing geofences and adds new ones.
      *
      * @param geofences List of geofence data to be added.
-     * @param pendingIntent PendingIntent that will be triggered when the geofence transitions occur.
      * @param onSuccess Callback invoked when geofences are added successfully.
      * @param onFailure Callback invoked when there is a failure in adding geofences.
-     * @param permissionCallback Callback to handle permission results.
      */
     fun removeAndAddGeofences(
         geofences: List<GeofenceData>,

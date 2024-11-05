@@ -19,12 +19,10 @@ object LocationPermissionHelper {
      * @return A list of missing permissions, if any.
      */
     fun checkLocationPermissions(context: Context): Boolean {
-        val fineAndCoarseLocation = checkLocationPermission(context)
-        val backgroundLocation =
-            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && checkBackgroundLocationPermission(context))
+        val fineAndCoarseLocation = checkFineAndCoarseLocationPermission(context)
         if (!fineAndCoarseLocation) {
             return false
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !backgroundLocation) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !checkBackgroundLocationPermission(context)) {
             return false
         }
         return true
@@ -36,7 +34,7 @@ object LocationPermissionHelper {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun checkLocationPermission(context: Context): Boolean {
+    private fun checkFineAndCoarseLocationPermission(context: Context): Boolean {
         return (checkPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION

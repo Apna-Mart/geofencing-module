@@ -12,19 +12,18 @@ import com.apnamart.geofencingmodule.geofencing.core.GeofenceManagerImpl
 import com.apnamart.geofencingmodule.geofencing.library.GeofenceLibrary
 import com.apnamart.geofencingmodule.geofencing.permissions.LocationPermissionHelper
 
-class GeofenceWorker (
+class AddGeofenceWorker (
     private val context: Context,
     workerParams: WorkerParameters,
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
 
-        Log.e(GeofenceConstants.TAG, "library worker do work")
-
         if (!LocationPermissionHelper.checkLocationPermissions(context)) {
-            Log.e(GeofenceConstants.TAG, "library worker location permission not found")
+            Log.e(GeofenceConstants.TAG, "location permission not found")
             return Result.success()
         }
+
         ContextCompat.registerReceiver(
             context,
             GeofenceBroadcastReceiver(),
@@ -32,9 +31,9 @@ class GeofenceWorker (
             ContextCompat.RECEIVER_NOT_EXPORTED
         )
 
-
         val geofenceDataList = GeofenceLibrary.getGeofenceDataProvider().getGeofenceData()
 
+        //need to change this
         GeofenceManagerImpl(context).removeAndAddGeofences(
             geofenceDataList,
             onSuccess = {
@@ -44,8 +43,6 @@ class GeofenceWorker (
                 Log.e(GeofenceConstants.TAG, "geofence addition failed")
             },
         )
-
-        Log.e(GeofenceConstants.TAG, "library worker success")
 
         return Result.success()
     }
