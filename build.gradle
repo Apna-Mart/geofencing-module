@@ -13,7 +13,7 @@ buildscript {
     }
     dependencies {
 //        classpath libs.fat.aar
-        classpath libs.gradle.v851
+        classpath(libs.gradle.v851)
     }
 }
 

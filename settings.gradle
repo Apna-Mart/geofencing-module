@@ -12,6 +12,6 @@ pluginManagement {
     }
 }
 
-rootProject.name = "geofencing-module"
-include ':app'
-include ':GeofencingModule'
+rootProject.name = "GeofencingModule"
+include(":app")
+include(":GeofencingModule")
