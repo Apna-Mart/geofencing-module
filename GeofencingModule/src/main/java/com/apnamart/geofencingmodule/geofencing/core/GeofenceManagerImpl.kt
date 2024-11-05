@@ -6,7 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.apnamart.geofencingmodule.geofencing.broadcast_receiver.GeofenceReceiver
+import com.apnamart.geofencingmodule.geofencing.broadcast_receiver.GeofenceBroadcastReceiver
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants.TAG
 import com.apnamart.geofencingmodule.geofencing.data.GeofenceData
 import com.google.android.gms.location.Geofence
@@ -60,7 +60,7 @@ class GeofenceManagerImpl(private val context: Context) : GeofenceManager {
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        val pendingIntent = createPendingIntent(context, GeofenceReceiver::class.java, GeofenceConstants.GEO_LOCATION_INTENT_ACTION)
+        val pendingIntent = createPendingIntent(context, GeofenceBroadcastReceiver::class.java, GeofenceConstants.GEO_LOCATION_INTENT_ACTION)
         removeAllGeofences(pendingIntent, {
             addGeofences(geofences, pendingIntent, onSuccess, onFailure)
         },{

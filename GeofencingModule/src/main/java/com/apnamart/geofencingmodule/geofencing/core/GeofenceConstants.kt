@@ -25,5 +25,7 @@ object GeofenceConstants {
 
     const val WORKER_CLASS_NAME = "worker_class_name"
 
+    const val TRIGGERING_GEOFENCE = "triggering_geofence"
+
 
 }

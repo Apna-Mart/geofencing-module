@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants.TAG
+import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants.TRIGGERING_GEOFENCE
 import com.apnamart.geofencingmodule.geofencing.data.GeofenceData
 import com.apnamart.geofencingmodule.geofencing.data.TriggeredGeofence
 import com.apnamart.geofencingmodule.geofencing.event_handler.GeofenceEventHandler
@@ -16,32 +17,23 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
 
-public class GeofenceReceiver() : BroadcastReceiver() {
+class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
-    lateinit var eventHandler: GeofenceEventHandler
+    private var eventHandler: GeofenceEventHandler?= null
 
-    override fun onReceive(context: Context, intent: Intent) { // Handle the received broadcast
+    override fun onReceive(context: Context, intent: Intent) {
 
         eventHandler = GeofenceLibrary.getEventHandler()
-        Log.e(GeofenceConstants.TAG, "library onReceive")
-
-        Toast.makeText(context, "library onReceive", Toast.LENGTH_LONG).show()
-
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
 
         if (geofencingEvent?.hasError() == true) {
-            // Handle error
             val errorMessage = GeofenceStatusCodes.getStatusCodeString(geofencingEvent.errorCode)
-            eventHandler.onGeofenceError(errorMessage)
-            Log.e(GeofenceConstants.TAG, "library error message $errorMessage")
+            eventHandler?.onGeofenceError(errorMessage)
             return
         }
 
-        // Get the triggering geofence IDs
         val triggeringGeofences = geofencingEvent?.triggeringGeofences
         val transitionType = geofencingEvent?.geofenceTransition
-
-        Log.e(GeofenceConstants.TAG, "library geofence triggered  $triggeringGeofences $transitionType")
 
         triggeringGeofences?.let {
             val geofenceList = mutableListOf<GeofenceData>()
@@ -57,7 +49,7 @@ public class GeofenceReceiver() : BroadcastReceiver() {
             }
             val triggeredGeofence =  TriggeredGeofence(
                 triggeringLocation = createLocation(
-                    "triggering_geofence",
+                    TRIGGERING_GEOFENCE,
                     geofencingEvent.triggeringLocation?.latitude ?: 0.0,
                 geofencingEvent.triggeringLocation?.longitude ?: 0.0
             ),
@@ -70,13 +62,13 @@ public class GeofenceReceiver() : BroadcastReceiver() {
     private fun handleGeofenceTransition(transitionType: Int, geofenceData: TriggeredGeofence) {
         when (transitionType) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
-                eventHandler.onGeofenceEntered(geofenceData)
+                eventHandler?.onGeofenceEntered(geofenceData)
             }
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
-                eventHandler.onGeofenceExited(geofenceData)
+                eventHandler?.onGeofenceExited(geofenceData)
             }
             Geofence.GEOFENCE_TRANSITION_DWELL -> {
-                eventHandler.onGeofenceDwelled(geofenceData)
+                eventHandler?.onGeofenceDwelled(geofenceData)
             }
             else -> {
                 Log.e(TAG, "Unknown geofence transition type: $transitionType")

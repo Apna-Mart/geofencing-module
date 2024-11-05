@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.apnamart.geofencingmodule.geofencing.broadcast_receiver.GeofenceReceiver
+import com.apnamart.geofencingmodule.geofencing.broadcast_receiver.GeofenceBroadcastReceiver
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceManagerImpl
 import com.apnamart.geofencingmodule.geofencing.library.GeofenceLibrary
@@ -27,7 +27,7 @@ class GeofenceWorker (
         }
         ContextCompat.registerReceiver(
             context,
-            GeofenceReceiver(),
+            GeofenceBroadcastReceiver(),
             IntentFilter(GeofenceConstants.GEO_LOCATION_INTENT_ACTION),
             ContextCompat.RECEIVER_NOT_EXPORTED
         )
