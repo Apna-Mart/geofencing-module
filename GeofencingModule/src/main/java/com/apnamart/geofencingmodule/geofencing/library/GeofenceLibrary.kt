@@ -4,27 +4,18 @@ import android.content.Context
 import android.util.Log
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
-import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants.TAG
-import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants.WORKER_CLASS_NAME
-import com.apnamart.geofencingmodule.geofencing.core.GeofenceManager
-import com.apnamart.geofencingmodule.geofencing.core.GeofenceManagerImpl
-import com.apnamart.geofencingmodule.geofencing.di.DaggerLibraryComponent
 import com.apnamart.geofencingmodule.geofencing.event_handler.GeofenceEventHandler
-import com.apnamart.geofencingmodule.geofencing.permissions.LocationPermissionHelper
 import com.apnamart.geofencingmodule.geofencing.provider.GeofenceDataProvider
 import com.apnamart.geofencingmodule.geofencing.work_manager.GeofenceWorker
 import com.apnamart.geofencingmodule.geofencing.work_manager.WorkManagerInitializer
-import dagger.multibindings.IntKey
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 object GeofenceLibrary {
 

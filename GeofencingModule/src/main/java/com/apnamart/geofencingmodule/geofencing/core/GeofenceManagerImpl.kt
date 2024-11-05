@@ -2,20 +2,17 @@ package com.apnamart.geofencingmodule.geofencing.core
 
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_MUTABLE
-import android.app.PendingIntent.FLAG_UPDATE_CURRENT
+import android.content.Context
+import android.content.Intent
+import android.util.Log
+import com.apnamart.geofencingmodule.geofencing.broadcast_receiver.GeofenceReceiver
+import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants.TAG
 import com.apnamart.geofencingmodule.geofencing.data.GeofenceData
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
-import android.content.Intent
-import android.util.Log
-import com.apnamart.geofencingmodule.geofencing.broadcast_receiver.GeofenceReceiver
-import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants.TAG
-import com.apnamart.geofencingmodule.geofencing.permissions.LocationPermissionHelper
 
 /**
  * Implementation of the GeofenceManager interface.

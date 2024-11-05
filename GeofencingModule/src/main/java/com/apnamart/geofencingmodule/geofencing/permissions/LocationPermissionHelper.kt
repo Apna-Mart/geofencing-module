@@ -1,21 +1,16 @@
 package com.apnamart.geofencingmodule.geofencing.permissions
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 
 /**
  * A utility class for managing location permissions.
  */
 object LocationPermissionHelper {
-
-    // Constants for permission request codes
-    private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
 
     /**
      * Checks if the required location permissions are granted.

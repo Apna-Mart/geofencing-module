@@ -5,16 +5,12 @@ import android.content.IntentFilter
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
-import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.apnamart.geofencingmodule.geofencing.broadcast_receiver.GeofenceReceiver
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants
-import com.apnamart.geofencingmodule.geofencing.core.GeofenceManager
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceManagerImpl
 import com.apnamart.geofencingmodule.geofencing.library.GeofenceLibrary
 import com.apnamart.geofencingmodule.geofencing.permissions.LocationPermissionHelper
-import com.apnamart.geofencingmodule.geofencing.provider.GeofenceDataProvider
-import javax.inject.Inject
 
 class GeofenceWorker (
     private val context: Context,

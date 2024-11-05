@@ -1,6 +1,5 @@
 package com.apnamart.geofencingmodule.geofencing.event_handler
 
-import com.apnamart.geofencingmodule.geofencing.data.GeofenceData
 import com.apnamart.geofencingmodule.geofencing.data.TriggeredGeofence
 
 interface GeofenceEventHandler {

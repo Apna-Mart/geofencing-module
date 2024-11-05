@@ -1,9 +1,9 @@
 package com.apnamart.geofencingmodule.geofencing.work_manager
 
 import android.content.Context
+import android.util.Log
 import androidx.work.Configuration
 import androidx.work.WorkManager
-import android.util.Log
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants.TAG
 import java.lang.ref.WeakReference
 
@@ -11,7 +11,6 @@ import java.lang.ref.WeakReference
 class WorkManagerInitializer(private val context: WeakReference<Context>) {
 
     val workManager by lazy {
-        Log.e(TAG, "Setting up WorkManager")
         context.get()?.let {
             try {
                 // Attempt to get the WorkManager instance
