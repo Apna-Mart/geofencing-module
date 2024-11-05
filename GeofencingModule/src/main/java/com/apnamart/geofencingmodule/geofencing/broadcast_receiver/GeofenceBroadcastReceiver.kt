@@ -19,7 +19,7 @@ import com.google.android.gms.location.GeofencingEvent
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
-    private var eventHandler: GeofenceEventHandler?= null
+    private var eventHandler: GeofenceEventHandler? = null
 
     override fun onReceive(context: Context, intent: Intent) {
 

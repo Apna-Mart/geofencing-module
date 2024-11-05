@@ -10,6 +10,4 @@ object GeofenceConstants {
     const val TAG = "GeofenceLibrary"
 
     const val TRIGGERING_GEOFENCE = "triggering_geofence"
-
-
 }

@@ -8,6 +8,8 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants
+import com.apnamart.geofencingmodule.geofencing.core.GeofenceManager
+import com.apnamart.geofencingmodule.geofencing.core.GeofenceManagerImpl
 import com.apnamart.geofencingmodule.geofencing.event_handler.GeofenceEventHandler
 import com.apnamart.geofencingmodule.geofencing.provider.GeofenceDataProvider
 import com.apnamart.geofencingmodule.geofencing.work_manager.AddGeofenceWorker
@@ -17,10 +19,12 @@ import java.util.concurrent.TimeUnit
 
 object GeofenceLibrary {
 
-    private lateinit var dataProvider: GeofenceDataProvider
-    private lateinit var eventHandler: GeofenceEventHandler
+    private var dataProvider: GeofenceDataProvider? = null
+    private  var eventHandler: GeofenceEventHandler? = null
 
     private var workManagerInitializer: WorkManagerInitializer? = null
+
+    private  var geofenceManager: GeofenceManager? = null
 
     fun initialize(
         context: Context,
@@ -32,6 +36,7 @@ object GeofenceLibrary {
 
         this.dataProvider = dataProvider
         this.eventHandler = eventHandler
+        geofenceManager = GeofenceManagerImpl(context)
 
         scheduleGeofenceWorker(context)
     }
@@ -57,12 +62,16 @@ object GeofenceLibrary {
         }
     }
 
-    fun getEventHandler(): GeofenceEventHandler {
+    fun getEventHandler(): GeofenceEventHandler? {
         return eventHandler
     }
 
-    fun getGeofenceDataProvider(): GeofenceDataProvider {
+    fun getGeofenceDataProvider(): GeofenceDataProvider? {
         return dataProvider
+    }
+
+    fun getGeofenceManager(): GeofenceManager? {
+        return geofenceManager
     }
 
     private fun schedulePeriodicWorkerWithConstraints(

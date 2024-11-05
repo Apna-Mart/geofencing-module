@@ -8,11 +8,10 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.apnamart.geofencingmodule.geofencing.broadcast_receiver.GeofenceBroadcastReceiver
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants
-import com.apnamart.geofencingmodule.geofencing.core.GeofenceManagerImpl
 import com.apnamart.geofencingmodule.geofencing.library.GeofenceLibrary
 import com.apnamart.geofencingmodule.geofencing.permissions.LocationPermissionHelper
 
-class AddGeofenceWorker (
+class AddGeofenceWorker(
     private val context: Context,
     workerParams: WorkerParameters,
 ) : CoroutineWorker(context, workerParams) {
@@ -31,11 +30,12 @@ class AddGeofenceWorker (
             ContextCompat.RECEIVER_NOT_EXPORTED
         )
 
-        val geofenceDataList = GeofenceLibrary.getGeofenceDataProvider().getGeofenceData()
+        val geofenceList =
+            GeofenceLibrary.getGeofenceDataProvider()?.getGeofenceData() ?: return Result.success()
+        val geofenceManager = GeofenceLibrary.getGeofenceManager() ?: return Result.success()
 
-        //need to change this
-        GeofenceManagerImpl(context).removeAndAddGeofences(
-            geofenceDataList,
+        geofenceManager.removeAndAddGeofences(
+            geofenceList,
             onSuccess = {
                 Log.e(GeofenceConstants.TAG, "geofence added successfully")
             },
