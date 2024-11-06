@@ -11,6 +11,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 rootProject.name = "geofencing-module"
 include ':app'
 include ':GeofencingModule'
