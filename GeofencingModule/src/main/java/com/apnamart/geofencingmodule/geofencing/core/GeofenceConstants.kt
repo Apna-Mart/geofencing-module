@@ -9,7 +9,7 @@ object GeofenceConstants {
     const val GEOFENCE_SERVICE_ONE_TIME_WORKER_JOB = "geofence_service_one_time_worker_job"
     const val GEOFENCE_SERVICE_ONE_TIME_WORKER = "geofence_service_one_time_worker"
 
-    const val TAG = "GeofenceLibrary"
+    const val TAG = "GeofenceModule"
 
     const val TRIGGERING_GEOFENCE = "triggering_geofence"
 }

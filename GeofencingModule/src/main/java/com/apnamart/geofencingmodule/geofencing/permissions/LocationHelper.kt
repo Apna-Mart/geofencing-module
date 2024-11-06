@@ -10,7 +10,7 @@ import androidx.annotation.RequiresApi
 /**
  * A utility class for managing location permissions.
  */
-object LocationPermissionHelper {
+object LocationHelper {
 
     /**
      * Checks if the required location permissions are granted.
@@ -22,7 +22,8 @@ object LocationPermissionHelper {
         val fineAndCoarseLocation = checkFineAndCoarseLocationPermission(context)
         if (!fineAndCoarseLocation) {
             return false
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !checkBackgroundLocationPermission(context)) {
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !checkBackgroundLocationPermission(context)) {
             return false
         }
         return true

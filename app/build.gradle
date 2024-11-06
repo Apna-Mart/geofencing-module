@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.apnamart.geofencingmodule"
+    namespace = "com.apnamart.geofencing_module"
     compileSdk = 34
 
     defaultConfig {

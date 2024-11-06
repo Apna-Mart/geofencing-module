@@ -1,11 +1,14 @@
 package com.apnamart.geofencingmodule.geofencing.library
 
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.WorkManager
+import com.apnamart.geofencingmodule.geofencing.broadcast_receiver.GeofenceBroadcastReceiver
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceManager
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceManagerImpl
@@ -15,10 +18,11 @@ import com.apnamart.geofencingmodule.geofencing.work_manager.AddGeofenceWorker
 import com.apnamart.geofencingmodule.geofencing.work_manager.WorkManagerInitializer
 import com.apnamart.geofencingmodule.geofencing.work_manager.worker_utils.scheduleOneTimeWorkerWithOutData
 import com.apnamart.geofencingmodule.geofencing.work_manager.worker_utils.schedulePeriodicWorkerWithConstraints
+import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
-object GeofenceLibrary {
+object GeofenceModule {
 
     private var dataProvider: GeofenceDataProvider? = null
     private var eventHandler: GeofenceEventHandler? = null
@@ -74,11 +78,21 @@ object GeofenceLibrary {
         return geofenceManager
     }
 
-    fun cancelGeofenceWorkers() {
+    suspend fun cancelGeofenceWorkers(context: Context, onSuccess : () -> Unit, onFailure : (Exception) -> Unit) {
+
+        val pendingIntent = createPendingIntent(context, GeofenceBroadcastReceiver::class.java, GeofenceConstants.GEO_LOCATION_INTENT_ACTION)
+
+        geofenceManager?.removeAllGeofences(pendingIntent,
+            onSuccess = {
+                onSuccess()
+            }, onFailure =  { e ->
+                onFailure(e)
+            })
+
         workManager?.cancelAllWorkByTag(GeofenceConstants.GEOFENCE_SERVICE_WORKER_JOB)
     }
 
-    fun addGeofence() {
+    suspend fun addGeofence() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -93,5 +107,13 @@ object GeofenceLibrary {
                 constraints,
             )
         }
+    }
+
+    fun createPendingIntent(context: Context, receiverClass: Class<*>, action : String): PendingIntent {
+        val intent = Intent(context, receiverClass)
+        intent.action = action
+        return PendingIntent.getBroadcast(
+            context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        )
     }
 }

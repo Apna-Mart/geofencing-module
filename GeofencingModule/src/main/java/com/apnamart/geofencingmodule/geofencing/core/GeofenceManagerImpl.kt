@@ -58,9 +58,9 @@ class GeofenceManagerImpl(private val context: Context) : GeofenceManager {
     override suspend fun removeAndAddGeofences(
         geofences: List<GeofenceData>,
         onSuccess: () -> Unit,
-        onFailure: (Exception) -> Unit
+        onFailure: (Exception) -> Unit,
+        pendingIntent: PendingIntent
     ) {
-        val pendingIntent = createPendingIntent(context, GeofenceBroadcastReceiver::class.java, GeofenceConstants.GEO_LOCATION_INTENT_ACTION)
         removeAllGeofences(pendingIntent, {
             addGeofences(geofences, pendingIntent, onSuccess, onFailure)
         },{
@@ -79,10 +79,5 @@ class GeofenceManagerImpl(private val context: Context) : GeofenceManager {
         return geofences.mapNotNull { it.toGeofence(onFailure) }
     }
 
-    private fun createPendingIntent(context: Context, receiverClass: Class<*>, action : String): PendingIntent {
-        val intent = Intent(context, receiverClass)
-        return PendingIntent.getBroadcast(
-            context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-        )
-    }
+
 }

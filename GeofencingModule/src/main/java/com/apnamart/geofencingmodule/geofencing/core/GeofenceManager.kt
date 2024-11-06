@@ -41,5 +41,6 @@ interface GeofenceManager {
         geofences: List<GeofenceData>,
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit,
+        pendingIntent: PendingIntent
     )
 }

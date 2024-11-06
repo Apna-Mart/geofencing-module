@@ -9,8 +9,8 @@ import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants.TRIGGERIN
 import com.apnamart.geofencingmodule.geofencing.data.GeofenceData
 import com.apnamart.geofencingmodule.geofencing.data.TriggeredGeofence
 import com.apnamart.geofencingmodule.geofencing.event_handler.GeofenceEventHandler
-import com.apnamart.geofencingmodule.geofencing.library.GeofenceLibrary
-import com.apnamart.geofencingmodule.geofencing.permissions.LocationPermissionHelper.createLocation
+import com.apnamart.geofencingmodule.geofencing.library.GeofenceModule
+import com.apnamart.geofencingmodule.geofencing.permissions.LocationHelper.createLocation
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
@@ -25,7 +25,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun onReceive(context: Context, intent: Intent) {
-        eventHandler = GeofenceLibrary.getEventHandler() ?: return
+        eventHandler = GeofenceModule.getEventHandler() ?: return
 
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
 
