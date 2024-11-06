@@ -11,5 +11,8 @@ object GeofenceConstants {
 
     const val TAG = "GeofenceModule"
 
+    const val GEOFENCE_LOCATION = "geofence_location"
     const val TRIGGERING_GEOFENCE = "triggering_geofence"
+    const val REACHED_STORE_RADIUS = "reached_store_radius"
+    const val MARK_OUT_RADIUS = "mark_out_radius"
 }

@@ -4,12 +4,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants
 import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants.TAG
 import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants.TRIGGERING_GEOFENCE
 import com.apnamart.geofencing_module.geofencing.data.GeofenceData
 import com.apnamart.geofencing_module.geofencing.data.TriggeredGeofence
 import com.apnamart.geofencing_module.geofencing.event_handler.GeofenceEventHandler
 import com.apnamart.geofencing_module.geofencing.library.GeofenceModule
+import com.apnamart.geofencing_module.geofencing.permissions.LocationHelper
 import com.apnamart.geofencing_module.geofencing.permissions.LocationHelper.createLocation
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
@@ -29,54 +31,94 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
 
-        if (geofencingEvent?.hasError() == true) {
+        if (geofencingEvent == null) {
+            coroutineScope.launch { eventHandler?.onGeofenceError("no event found") }
+            return
+        }
+        if (geofencingEvent.hasError()) {
             val errorMessage = GeofenceStatusCodes.getStatusCodeString(geofencingEvent.errorCode)
-            coroutineScope.launch {  eventHandler?.onGeofenceError(errorMessage) }
+            coroutineScope.launch { eventHandler?.onGeofenceError(errorMessage) }
             return
         }
 
-        val triggeringGeofences = geofencingEvent?.triggeringGeofences
-        val transitionType = geofencingEvent?.geofenceTransition
+        val triggeringGeofences = geofencingEvent.triggeringGeofences ?: return
+        val transitionType = geofencingEvent.geofenceTransition
 
-        triggeringGeofences?.let {
+        val triggeringLocation = createLocation(
+            TRIGGERING_GEOFENCE,
+            geofencingEvent.triggeringLocation?.latitude ?: 0.0,
+            geofencingEvent.triggeringLocation?.longitude ?: 0.0
+        )
+
+        coroutineScope.launch {
             val geofenceList = mutableListOf<GeofenceData>()
             for (geofence in triggeringGeofences) {
-               geofenceList.add(GeofenceData(
-                    requestId = geofence.requestId,
-                    latitude = geofence.latitude,
-                    longitude = geofence.longitude,
-                    radius = geofence.radius,
-                    transitionType = transitionType ?: 0
+                geofenceList.add(
+                    GeofenceData(
+                        requestId = geofence.requestId,
+                        latitude = geofence.latitude,
+                        longitude = geofence.longitude,
+                        radius = geofence.radius,
+                        transitionType = transitionType
+                    )
                 )
-               )
             }
-            val triggeredGeofence =  TriggeredGeofence(
-                triggeringLocation = createLocation(
-                    TRIGGERING_GEOFENCE,
-                    geofencingEvent.triggeringLocation?.latitude ?: 0.0,
-                geofencingEvent.triggeringLocation?.longitude ?: 0.0
-            ),
-                triggeringGeofence = geofenceList
+
+            val location = createLocation(
+                GeofenceConstants.GEOFENCE_LOCATION,
+                geofenceList.first().latitude,
+                geofenceList.first().longitude
             )
-            coroutineScope.launch {  handleGeofenceTransition(transitionType ?: 0, triggeredGeofence) }
+
+            val currentLocation =
+                LocationHelper.getLocation(context, coroutineScope, onError = { e ->
+                    coroutineScope.launch { eventHandler?.onGeofenceError(e.toString()) }
+                }) ?: return@launch
+
+
+            val geofenceDistanceFromStore = triggeringLocation.distanceTo(location)
+            val currentDistanceFromStore = currentLocation.distanceTo(location)
+
+            val triggeredGeofence = TriggeredGeofence(
+                triggeringLocation = triggeringLocation,
+                triggeringGeofence = geofenceList,
+                currentDistanceFromStore = currentDistanceFromStore,
+                geofenceDistanceFromStore = geofenceDistanceFromStore,
+                currentLocation = currentLocation
+            )
+            handleGeofenceTransition(
+                transitionType,
+                triggeredGeofence
+            )
         }
     }
 
-    private suspend fun handleGeofenceTransition(transitionType: Int, geofenceData: TriggeredGeofence) {
+    private suspend fun handleGeofenceTransition(
+        transitionType: Int,
+        geofenceData: TriggeredGeofence
+    ) {
+
         when (transitionType) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
-                eventHandler?.onGeofenceEntered(geofenceData)
+                if (geofenceData.currentDistanceFromStore <= geofenceData.triggeringGeofence.first().radius) {
+                    eventHandler?.onGeofenceEntered(geofenceData)
+                }
             }
+
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
-                eventHandler?.onGeofenceExited(geofenceData)
+                if (geofenceData.currentDistanceFromStore >= geofenceData.triggeringGeofence.first().radius) {
+                    eventHandler?.onGeofenceExited(geofenceData)
+                }
             }
+
             Geofence.GEOFENCE_TRANSITION_DWELL -> {
-                eventHandler?.onGeofenceDwelled(geofenceData)
+                if (geofenceData.currentDistanceFromStore <= geofenceData.triggeringGeofence.first().radius) {
+                    eventHandler?.onGeofenceDwelled(geofenceData)
+                }
             }
             else -> {
                 Log.e(TAG, "Unknown geofence transition type: $transitionType")
             }
         }
     }
-
 }
