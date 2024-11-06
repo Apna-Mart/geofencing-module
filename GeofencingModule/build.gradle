@@ -11,7 +11,7 @@ android {
     defaultConfig {
         minSdk  26
 
-        testInstrumentationRunner  "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
         versionCode 2
         versionName "1.1.0"
@@ -31,11 +31,12 @@ android {
         jvmTarget = '11'
     }
 }
-group = "com.github.vilas-apnamart"
+group = 'com.github.vilas-apnamart'
 
 version = "1.1.0"
 
 dependencies {
+
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material

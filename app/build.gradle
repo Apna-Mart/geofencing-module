@@ -19,7 +19,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
         }
     }
     compileOptions {
@@ -29,15 +28,21 @@ android {
     kotlinOptions {
         jvmTarget = '18'
     }
+
 }
 
 dependencies {
+
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
     androidTestImplementation libs.androidx.espresso.core
     implementation fileTree(dir: 'libs', include: '*.jar')
+    // LifeCycle Aware Components
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.lifecycle.common.java8
+    implementation libs.androidx.lifecycle.runtime.ktx
     // optional - ProcessLifecycleOwner provides a lifecycle for the whole application process
     implementation libs.androidx.lifecycle.process
-
 }
