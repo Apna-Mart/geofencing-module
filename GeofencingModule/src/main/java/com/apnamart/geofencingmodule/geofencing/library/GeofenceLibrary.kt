@@ -34,7 +34,6 @@ object GeofenceLibrary {
         dataProvider: GeofenceDataProvider,
         eventHandler: GeofenceEventHandler
     ) {
-
         workManagerInitializer = WorkManagerInitializer(WeakReference(context))
 
         this.dataProvider = dataProvider
@@ -43,10 +42,10 @@ object GeofenceLibrary {
 
         workManager = workManagerInitializer?.workManager
 
-        scheduleGeofenceWorker(context)
+        scheduleGeofenceWorker()
     }
 
-    private fun scheduleGeofenceWorker(context: Context) {
+    private fun scheduleGeofenceWorker() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -57,7 +56,6 @@ object GeofenceLibrary {
                 GeofenceConstants.GEOFENCE_SERVICE_WORKER,
                 ExistingPeriodicWorkPolicy.KEEP,
                 Pair(15, TimeUnit.MINUTES),
-                Pair(5, TimeUnit.MINUTES),
                 AddGeofenceWorker::class.java,
                 constraints
             )
@@ -77,7 +75,7 @@ object GeofenceLibrary {
     }
 
     fun cancelGeofenceWorkers() {
-        workManagerInitializer?.workManager?.cancelAllWorkByTag(GeofenceConstants.GEOFENCE_SERVICE_WORKER_JOB)
+        workManager?.cancelAllWorkByTag(GeofenceConstants.GEOFENCE_SERVICE_WORKER_JOB)
     }
 
     fun addGeofence() {
@@ -88,7 +86,7 @@ object GeofenceLibrary {
         workManager?.let {
             scheduleOneTimeWorkerWithOutData(
                 it,
-                GeofenceConstants.GEOFENCE_SERVICE_WORKER_JOB,
+                GeofenceConstants.GEOFENCE_SERVICE_ONE_TIME_WORKER_JOB,
                 GeofenceConstants.GEOFENCE_SERVICE_ONE_TIME_WORKER,
                 ExistingWorkPolicy.REPLACE,
                 AddGeofenceWorker::class.java,
@@ -96,6 +94,4 @@ object GeofenceLibrary {
             )
         }
     }
-
-
 }

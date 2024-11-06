@@ -46,7 +46,7 @@ class GeofenceManagerImpl(private val context: Context) : GeofenceManager {
 
     }
 
-    override fun removeAllGeofences(pendingIntent: PendingIntent, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+    override suspend fun removeAllGeofences(pendingIntent: PendingIntent, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         geofencingClient.removeGeofences(pendingIntent).apply {
             addOnSuccessListener { onSuccess() }
             addOnFailureListener { e ->
@@ -55,7 +55,7 @@ class GeofenceManagerImpl(private val context: Context) : GeofenceManager {
         }
     }
 
-    override fun removeAndAddGeofences(
+    override suspend fun removeAndAddGeofences(
         geofences: List<GeofenceData>,
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit

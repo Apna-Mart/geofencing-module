@@ -28,7 +28,7 @@ interface GeofenceManager {
      * @param pendingIntent The PendingIntent for which geofences should be removed.
      * @param onSuccess Callback invoked when all geofences are removed successfully.
      */
-    fun removeAllGeofences(pendingIntent: PendingIntent, onSuccess: () -> Unit, onFailure: (Exception) -> Unit)
+    suspend fun removeAllGeofences(pendingIntent: PendingIntent, onSuccess: () -> Unit, onFailure: (Exception) -> Unit)
 
     /**
      * Removes existing geofences and adds new ones.
@@ -37,7 +37,7 @@ interface GeofenceManager {
      * @param onSuccess Callback invoked when geofences are added successfully.
      * @param onFailure Callback invoked when there is a failure in adding geofences.
      */
-    fun removeAndAddGeofences(
+    suspend fun removeAndAddGeofences(
         geofences: List<GeofenceData>,
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit,

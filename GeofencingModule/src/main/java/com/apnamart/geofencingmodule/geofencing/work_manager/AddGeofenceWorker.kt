@@ -18,6 +18,19 @@ class AddGeofenceWorker(
 
     override suspend fun doWork(): Result {
 
+        val geofenceDataProvider = GeofenceLibrary.getGeofenceDataProvider()
+        val geofenceManager = GeofenceLibrary.getGeofenceManager()
+
+        if (geofenceDataProvider == null|| geofenceManager == null) {
+            return Result.failure()
+        }
+
+        if (!geofenceDataProvider.shouldAddGeofence()) {
+            Log.e(GeofenceConstants.TAG, "geofence should not be added")
+            return Result.success()
+        }
+
+
         if (!LocationPermissionHelper.checkLocationPermissions(context)) {
             Log.e(GeofenceConstants.TAG, "location permission not found")
             return Result.success()
@@ -31,18 +44,17 @@ class AddGeofenceWorker(
         )
 
         val geofenceList =
-            GeofenceLibrary.getGeofenceDataProvider()?.getGeofenceData() ?: return Result.success()
-        val geofenceManager = GeofenceLibrary.getGeofenceManager() ?: return Result.success()
+            geofenceDataProvider.getGeofenceData()
 
-        geofenceManager.removeAndAddGeofences(
-            geofenceList,
-            onSuccess = {
-                Log.e(GeofenceConstants.TAG, "geofence added successfully")
-            },
-            onFailure = {
-                Log.e(GeofenceConstants.TAG, "geofence addition failed")
-            },
-        )
+            geofenceManager.removeAndAddGeofences(
+                geofenceList,
+                onSuccess = {
+                    Log.e(GeofenceConstants.TAG, "geofence added successfully")
+                },
+                onFailure = {
+                    Log.e(GeofenceConstants.TAG, "geofence addition failed")
+                }
+            )
 
         return Result.success()
     }

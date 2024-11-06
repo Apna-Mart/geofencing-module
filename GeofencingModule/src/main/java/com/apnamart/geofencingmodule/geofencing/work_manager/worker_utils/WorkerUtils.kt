@@ -32,15 +32,13 @@ fun schedulePeriodicWorkerWithConstraints(
     workerName: String,
     existingPeriodicWorkPolicy: ExistingPeriodicWorkPolicy,
     duration: Pair<Long, TimeUnit>,
-    flexDuration: Pair<Long, TimeUnit>,
     workerClass: Class<out CoroutineWorker>,
     constraints: Constraints,
 ) {
     val worker =
         PeriodicWorkRequest.Builder(
             workerClass, duration.first,
-            duration.second, flexDuration.first,
-            flexDuration.second,
+            duration.second
         ).addTag(tag).setConstraints(constraints).build()
 
     workManager.enqueueUniquePeriodicWork(
