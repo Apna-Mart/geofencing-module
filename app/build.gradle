@@ -1,42 +1,43 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    namespace = "com.apnamart.geofencing_module"
-    compileSdk = 34
+    namespace 'com.apnamart.geofencing_module'
+    compileSdk 34
 
     defaultConfig {
-        minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
 
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_18
-        targetCompatibility = JavaVersion.VERSION_18
+        sourceCompatibility JavaVersion.VERSION_18
+        targetCompatibility JavaVersion.VERSION_18
     }
     kotlinOptions {
-        jvmTarget = "18"
+        jvmTarget = '18'
     }
 }
 
 dependencies {
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+    androidTestImplementation libs.androidx.espresso.core
+    implementation fileTree(dir: 'libs', include: '*.jar')
+    // optional - ProcessLifecycleOwner provides a lifecycle for the whole application process
+    implementation libs.androidx.lifecycle.process
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }
