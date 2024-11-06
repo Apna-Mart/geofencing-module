@@ -4,8 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import android.widget.Toast
-import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants.TAG
 import com.apnamart.geofencingmodule.geofencing.core.GeofenceConstants.TRIGGERING_GEOFENCE
 import com.apnamart.geofencingmodule.geofencing.data.GeofenceData
@@ -16,19 +14,24 @@ import com.apnamart.geofencingmodule.geofencing.permissions.LocationPermissionHe
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     private var eventHandler: GeofenceEventHandler? = null
 
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
     override fun onReceive(context: Context, intent: Intent) {
-        eventHandler = GeofenceLibrary.getEventHandler() ?: return eventHandler?.onGeofenceError("event handler is null") ?: return
+        eventHandler = GeofenceLibrary.getEventHandler() ?: return
 
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
 
         if (geofencingEvent?.hasError() == true) {
             val errorMessage = GeofenceStatusCodes.getStatusCodeString(geofencingEvent.errorCode)
-            eventHandler?.onGeofenceError(errorMessage)
+            coroutineScope.launch {  eventHandler?.onGeofenceError(errorMessage) }
             return
         }
 
@@ -55,11 +58,11 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             ),
                 triggeringGeofence = geofenceList
             )
-            handleGeofenceTransition(transitionType ?: 0, triggeredGeofence)
+            coroutineScope.launch {  handleGeofenceTransition(transitionType ?: 0, triggeredGeofence) }
         }
     }
 
-    private fun handleGeofenceTransition(transitionType: Int, geofenceData: TriggeredGeofence) {
+    private suspend fun handleGeofenceTransition(transitionType: Int, geofenceData: TriggeredGeofence) {
         when (transitionType) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
                 eventHandler?.onGeofenceEntered(geofenceData)
