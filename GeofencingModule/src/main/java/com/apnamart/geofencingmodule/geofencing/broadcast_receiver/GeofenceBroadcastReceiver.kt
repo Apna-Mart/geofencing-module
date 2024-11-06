@@ -22,7 +22,6 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private var eventHandler: GeofenceEventHandler? = null
 
     override fun onReceive(context: Context, intent: Intent) {
-        Toast.makeText(context, "onReceiver ", Toast.LENGTH_LONG).show()
         eventHandler = GeofenceLibrary.getEventHandler() ?: return eventHandler?.onGeofenceError("event handler is null") ?: return
 
         val geofencingEvent = GeofencingEvent.fromIntent(intent)

@@ -21,7 +21,7 @@ class AddGeofenceWorker(
         val geofenceDataProvider = GeofenceLibrary.getGeofenceDataProvider()
         val geofenceManager = GeofenceLibrary.getGeofenceManager()
 
-        if (geofenceDataProvider == null|| geofenceManager == null) {
+        if (geofenceDataProvider == null || geofenceManager == null) {
             return Result.failure()
         }
 
@@ -43,18 +43,17 @@ class AddGeofenceWorker(
             ContextCompat.RECEIVER_NOT_EXPORTED
         )
 
-        val geofenceList =
-            geofenceDataProvider.getGeofenceData()
+        val geofenceList = geofenceDataProvider.getGeofenceData()
 
-            geofenceManager.removeAndAddGeofences(
-                geofenceList,
-                onSuccess = {
-                    Log.e(GeofenceConstants.TAG, "geofence added successfully")
-                },
-                onFailure = {
-                    Log.e(GeofenceConstants.TAG, "geofence addition failed")
-                }
-            )
+        geofenceManager.removeAndAddGeofences(
+            geofenceList,
+            onSuccess = {
+                Log.e(GeofenceConstants.TAG, "geofence added successfully")
+            },
+            onFailure = {
+                Log.e(GeofenceConstants.TAG, "geofence addition failed")
+            }
+        )
 
         return Result.success()
     }
