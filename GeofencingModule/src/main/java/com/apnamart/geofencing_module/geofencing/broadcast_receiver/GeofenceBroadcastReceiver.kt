@@ -78,7 +78,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
             val currentLocation =
                 LocationHelper.getLocation(context, coroutineScope, onError = { e ->
-                    coroutineScope.launch { eventHandler?.onGeofenceError(e.toString()) }
+                    coroutineScope.launch { eventHandler?.onFailure(e) }
                 }) ?: return@launch
 
 
