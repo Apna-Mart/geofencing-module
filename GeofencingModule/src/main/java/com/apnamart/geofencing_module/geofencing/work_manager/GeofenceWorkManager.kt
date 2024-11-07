@@ -6,15 +6,13 @@ import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants.TAG
 import com.apnamart.geofencing_module.geofencing.library.GeofenceModule
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.apnamart.geofencing_module.geofencing.library.GeofenceModule.coroutineScope
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 
 class WorkManagerInitializer(private val context: WeakReference<Context>) {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
     val workManager by lazy {
         context.get()?.let {
             try {

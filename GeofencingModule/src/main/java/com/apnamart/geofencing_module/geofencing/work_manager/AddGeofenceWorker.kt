@@ -10,18 +10,15 @@ import com.apnamart.geofencing_module.geofencing.broadcast_receiver.GeofenceBroa
 import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants
 import com.apnamart.geofencing_module.geofencing.data.getGeofenceData
 import com.apnamart.geofencing_module.geofencing.library.GeofenceModule
+import com.apnamart.geofencing_module.geofencing.library.GeofenceModule.coroutineScope
 import com.apnamart.geofencing_module.geofencing.library.GeofenceModule.createPendingIntent
 import com.apnamart.geofencing_module.geofencing.permissions.LocationHelper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AddGeofenceWorker(
     private val context: Context,
     workerParams: WorkerParameters,
 ) : CoroutineWorker(context, workerParams) {
-
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     override suspend fun doWork(): Result {
 

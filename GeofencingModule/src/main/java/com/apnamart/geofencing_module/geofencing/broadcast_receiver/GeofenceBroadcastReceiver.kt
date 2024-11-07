@@ -16,27 +16,23 @@ import com.apnamart.geofencing_module.geofencing.permissions.LocationHelper.crea
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     private var eventHandler: GeofenceEventHandler? = null
-
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
-
+    
     override fun onReceive(context: Context, intent: Intent) {
         eventHandler = GeofenceModule.getEventHandler() ?: return
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
 
         if (geofencingEvent == null) {
-            coroutineScope.launch { eventHandler?.onGeofenceError("no event found") }
+             GeofenceModule.coroutineScope.launch { eventHandler?.onGeofenceError("no event found") }
             return
         }
         if (geofencingEvent.hasError()) {
             val errorMessage = GeofenceStatusCodes.getStatusCodeString(geofencingEvent.errorCode)
-            coroutineScope.launch { eventHandler?.onGeofenceError(errorMessage) }
+             GeofenceModule.coroutineScope.launch { eventHandler?.onGeofenceError(errorMessage) }
             return
         }
 
@@ -44,7 +40,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         val transitionType = geofencingEvent.geofenceTransition
 
         if (triggeringGeofences == null){
-            coroutineScope.launch { eventHandler?.onGeofenceError("no triggering Geofence in geofence event") }
+             GeofenceModule.coroutineScope.launch { eventHandler?.onGeofenceError("no triggering Geofence in geofence event") }
             return
         }
 
@@ -56,7 +52,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             geofencingEvent.triggeringLocation?.longitude ?: 0.0
         )
 
-        coroutineScope.launch {
+         GeofenceModule.coroutineScope.launch {
             val geofenceList = mutableListOf<GeofenceData>()
             for (geofence in triggeringGeofences) {
                 geofenceList.add(
@@ -77,8 +73,8 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             )
 
             val currentLocation =
-                LocationHelper.getLocation(context, coroutineScope, onError = { e ->
-                    coroutineScope.launch { eventHandler?.onFailure(e) }
+                LocationHelper.getLocation(context,  GeofenceModule.coroutineScope, onError = { e ->
+                     GeofenceModule.coroutineScope.launch { eventHandler?.onFailure(e) }
                 }) ?: return@launch
 
 
