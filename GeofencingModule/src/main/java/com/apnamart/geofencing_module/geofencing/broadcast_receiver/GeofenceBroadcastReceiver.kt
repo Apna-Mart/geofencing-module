@@ -6,7 +6,7 @@ import android.content.Intent
 import android.util.Log
 import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants
 import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants.TAG
-import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants.TRIGGERING_GEOFENCE
+import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants.TRIGGERING_LOCATION
 import com.apnamart.geofencing_module.geofencing.data.GeofenceData
 import com.apnamart.geofencing_module.geofencing.data.TriggeredGeofenceData
 import com.apnamart.geofencing_module.geofencing.event_handler.GeofenceEventHandler
@@ -39,7 +39,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         val triggeringGeofences = geofencingEvent.triggeringGeofences
         val transitionType = geofencingEvent.geofenceTransition
 
-        if (triggeringGeofences == null){
+        if (triggeringGeofences.isNullOrEmpty()){
              GeofenceModule.coroutineScope.launch { eventHandler?.onGeofenceError("no triggering Geofence in geofence event") }
             return
         }
@@ -47,7 +47,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         //TODO : this has support of only catering to a single geofence, and
         // assuming it as the point of truth, as we are only providing a single geofence's data, bt need to add a support of multiple geofences with different lat long later
         val triggeringLocation = createLocation(
-            TRIGGERING_GEOFENCE,
+            TRIGGERING_LOCATION,
             geofencingEvent.triggeringLocation?.latitude ?: 0.0,
             geofencingEvent.triggeringLocation?.longitude ?: 0.0
         )
