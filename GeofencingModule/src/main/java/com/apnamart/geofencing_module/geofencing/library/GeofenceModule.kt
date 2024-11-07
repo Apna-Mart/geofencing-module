@@ -18,6 +18,9 @@ import com.apnamart.geofencing_module.geofencing.work_manager.AddGeofenceWorker
 import com.apnamart.geofencing_module.geofencing.work_manager.WorkManagerInitializer
 import com.apnamart.geofencing_module.geofencing.work_manager.worker_utils.scheduleOneTimeWorkerWithOutData
 import com.apnamart.geofencing_module.geofencing.work_manager.worker_utils.schedulePeriodicWorkerWithConstraints
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
@@ -32,6 +35,8 @@ object GeofenceModule {
     private var geofenceManager: GeofenceManager? = null
 
     private var workManager: WorkManager? = null
+
+    val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     fun initialize(
         context: Context,
@@ -82,8 +87,7 @@ object GeofenceModule {
 
         val pendingIntent = createPendingIntent(context, GeofenceBroadcastReceiver::class.java, GeofenceConstants.GEO_LOCATION_INTENT_ACTION)
 
-        geofenceManager?.removeAllGeofences(pendingIntent,
-            onSuccess = {
+        geofenceManager?.removeAllGeofences(pendingIntent, onSuccess = {
                 onSuccess()
             }, onFailure =  { e ->
                 onFailure(e)

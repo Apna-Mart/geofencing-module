@@ -39,15 +39,6 @@ object LocationHelper {
         return LocationServices.getSettingsClient(context)
     }
 
-    private fun contributeLocationSettingsRequest(): LocationSettingsRequest.Builder {
-        val locationRequest = LocationRequest.create().apply {
-            interval = 10000
-            fastestInterval = 5000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-        return LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-    }
-
     fun checkLocationPermissions(context: Context): Boolean {
         val fineAndCoarseLocation = checkFineAndCoarseLocationPermission(context)
         if (!fineAndCoarseLocation) {
@@ -94,15 +85,12 @@ object LocationHelper {
     fun getLastLocation(
         context: Context,
         scope: CoroutineScope,
-        isRepeat: Boolean
+        onFailure :(Exception) -> Unit
     ): Flow<Location?> = callbackFlow() {
 
-        val locationRequest: LocationRequest =
-            LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
-                .setMaxUpdates(if (isRepeat) MAX_UPDATE else 1)
-                .setMinUpdateIntervalMillis(5000)
-                .build()
-
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY , 10000)
+            .setMaxUpdates(1)
+            .build()
 
         val listener = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
@@ -116,7 +104,9 @@ object LocationHelper {
             }
         }
 
-        getLocationClient(context).checkLocationSettings(contributeLocationSettingsRequest().build())
+        getLocationClient(context).checkLocationSettings(
+            LocationSettingsRequest.Builder().addLocationRequest(locationRequest).build()
+        )
             .addOnSuccessListener {
                 try {
                     LocationServices.getFusedLocationProviderClient(context).requestLocationUpdates(
@@ -125,22 +115,24 @@ object LocationHelper {
                         Looper.getMainLooper()
                     ).addOnFailureListener {
                         close(it)
+                        onFailure(it)
                         scope.launch {
                             trySend(null)
                         }
                     }.addOnCompleteListener { task ->
                         if (!task.isSuccessful || task.exception != null) {
-                            trySend(
-                                null
-                            )
+                            task.exception?.let { onFailure(it)}
+                            trySend(null)
                         }
                     }
                 } catch (e: Exception) {
+                    onFailure(e)
                     scope.launch {
                         trySend(null)
                     }
                 }
-            }.addOnFailureListener {
+            }.addOnFailureListener { e->
+                onFailure(e)
                 scope.launch {
                     trySend(null)
                 }
@@ -150,17 +142,17 @@ object LocationHelper {
         }
     }
 
-    private val MAX_UPDATE = 5
-
-
     suspend fun getLocation(
         context: Context,
         coroutineScope: CoroutineScope,
         onError: (Exception) -> Unit
     ): Location? {
-        if (!checkLocationPermissions(context)) return null
+        if (!checkLocationPermissions(context)){
+            onError(Exception("Location permissions not granted"))
+            return null
+        }
         return try {
-            getLastLocation(context, coroutineScope, true).firstOrNull()
+            getLastLocation(context, coroutineScope, onError).firstOrNull()
         } catch (exception: Exception) {
             onError(exception)
             null

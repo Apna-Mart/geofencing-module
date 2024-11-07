@@ -10,8 +10,10 @@ import com.apnamart.geofencing_module.geofencing.broadcast_receiver.GeofenceBroa
 import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants
 import com.apnamart.geofencing_module.geofencing.data.getGeofenceData
 import com.apnamart.geofencing_module.geofencing.library.GeofenceModule
+import com.apnamart.geofencing_module.geofencing.library.GeofenceModule.coroutineScope
 import com.apnamart.geofencing_module.geofencing.library.GeofenceModule.createPendingIntent
 import com.apnamart.geofencing_module.geofencing.permissions.LocationHelper
+import kotlinx.coroutines.launch
 
 class AddGeofenceWorker(
     private val context: Context,
@@ -22,9 +24,11 @@ class AddGeofenceWorker(
 
         val geofenceDataProvider = GeofenceModule.getGeofenceDataProvider()
         val geofenceManager = GeofenceModule.getGeofenceManager()
+        val geofenceEventHandler = GeofenceModule.getEventHandler() ?: return Result.success()
 
-        if (geofenceDataProvider == null || geofenceManager == null) {
-            return Result.failure()
+        if (geofenceDataProvider == null || geofenceManager == null ) {
+            geofenceEventHandler.onGeofenceError("geofence data provider or geofence manager not found")
+            return Result.success()
         }
 
         if (!geofenceDataProvider.shouldAddGeofence()) {
@@ -34,6 +38,7 @@ class AddGeofenceWorker(
 
 
         if (!LocationHelper.checkLocationPermissions(context)) {
+            geofenceEventHandler.onGeofenceError("location permission not found")
             Log.e(GeofenceConstants.TAG, "location permission not found")
             return Result.success()
         }
@@ -56,9 +61,11 @@ class AddGeofenceWorker(
         geofenceManager.removeAndAddGeofences(
             getGeofenceData(storeGeofenceData),
             onSuccess = {
+                coroutineScope.launch {  geofenceEventHandler.onGeofenceAdded() }
                 Log.e(GeofenceConstants.TAG, "geofence added successfully")
             },
-            onFailure = {
+            onFailure = { e ->
+                coroutineScope.launch {  geofenceEventHandler.onFailure(e)}
                 Log.e(GeofenceConstants.TAG, "geofence addition failed")
             },
             pendingIntent
