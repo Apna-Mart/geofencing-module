@@ -68,7 +68,7 @@ fun getGeofenceData(storeGeofenceData: StoreGeofenceData): List<GeofenceData> {
             latitude = storeGeofenceData.latitude,
             longitude = storeGeofenceData.longitude,
             delay = 1 * 1000,
-            transitionType = Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL or Geofence.GEOFENCE_TRANSITION_EXIT
+            transitionType = Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL
         )
     )
 }

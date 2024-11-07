@@ -8,7 +8,7 @@ import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants
 import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants.TAG
 import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants.TRIGGERING_GEOFENCE
 import com.apnamart.geofencing_module.geofencing.data.GeofenceData
-import com.apnamart.geofencing_module.geofencing.data.TriggeredGeofence
+import com.apnamart.geofencing_module.geofencing.data.TriggeredGeofenceData
 import com.apnamart.geofencing_module.geofencing.event_handler.GeofenceEventHandler
 import com.apnamart.geofencing_module.geofencing.library.GeofenceModule
 import com.apnamart.geofencing_module.geofencing.permissions.LocationHelper
@@ -53,23 +53,19 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         )
 
          GeofenceModule.coroutineScope.launch {
-            val geofenceList = mutableListOf<GeofenceData>()
-            for (geofence in triggeringGeofences) {
-                geofenceList.add(
-                    GeofenceData(
-                        requestId = geofence.requestId,
-                        latitude = geofence.latitude,
-                        longitude = geofence.longitude,
-                        radius = geofence.radius,
-                        transitionType = transitionType
-                    )
-                )
-            }
+             // we use the first of the list as, there is only going be one geofence triggered for one transition
+             val triggeredGeofence = GeofenceData(
+                 requestId = triggeringGeofences.first().requestId,
+                 latitude = triggeringGeofences.first().latitude,
+                 longitude = triggeringGeofences.first().longitude,
+                 radius = triggeringGeofences.first().radius,
+                 transitionType = transitionType
+             )
 
-            val location = createLocation(
+            val storeLocation = createLocation(
                 GeofenceConstants.GEOFENCE_LOCATION,
-                geofenceList.first().latitude,
-                geofenceList.first().longitude
+                triggeredGeofence.latitude,
+                triggeredGeofence.longitude
             )
 
             val currentLocation =
@@ -78,43 +74,43 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 }) ?: return@launch
 
 
-            val geofenceDistanceFromStore = triggeringLocation.distanceTo(location)
-            val currentDistanceFromStore = currentLocation.distanceTo(location)
+            val geofenceDistanceFromStore = triggeringLocation.distanceTo(storeLocation)
+            val currentDistanceFromStore = currentLocation.distanceTo(storeLocation)
 
-            val triggeredGeofence = TriggeredGeofence(
+            val triggeredGeofenceData = TriggeredGeofenceData(
                 triggeringLocation = triggeringLocation,
-                triggeringGeofence = geofenceList,
+                triggeredGeofence = triggeredGeofence,
                 currentDistanceFromStore = currentDistanceFromStore,
                 geofenceDistanceFromStore = geofenceDistanceFromStore,
                 currentLocation = currentLocation
             )
             handleGeofenceTransition(
                 transitionType,
-                triggeredGeofence
+                triggeredGeofenceData
             )
         }
     }
 
     private suspend fun handleGeofenceTransition(
         transitionType: Int,
-        geofenceData: TriggeredGeofence
+        geofenceData: TriggeredGeofenceData
     ) {
 
         when (transitionType) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
-                if (geofenceData.currentDistanceFromStore <= geofenceData.triggeringGeofence.first().radius) {
+                if (geofenceData.currentDistanceFromStore <= geofenceData.triggeredGeofence.radius) {
                     eventHandler?.onGeofenceEntered(geofenceData)
                 }
             }
 
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
-                if (geofenceData.currentDistanceFromStore >= geofenceData.triggeringGeofence.first().radius) {
+                if (geofenceData.currentDistanceFromStore >= geofenceData.triggeredGeofence.radius) {
                     eventHandler?.onGeofenceExited(geofenceData)
                 }
             }
 
             Geofence.GEOFENCE_TRANSITION_DWELL -> {
-                if (geofenceData.currentDistanceFromStore <= geofenceData.triggeringGeofence.first().radius) {
+                if (geofenceData.currentDistanceFromStore <= geofenceData.triggeredGeofence.radius) {
                     eventHandler?.onGeofenceDwelled(geofenceData)
                 }
             }
