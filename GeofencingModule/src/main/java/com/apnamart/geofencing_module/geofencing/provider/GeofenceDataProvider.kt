@@ -1,6 +1,8 @@
 package com.apnamart.geofencing_module.geofencing.provider
 
 import com.apnamart.geofencing_module.geofencing.data.GeofenceData
+import com.apnamart.geofencing_module.geofencing.data.StoreGeofenceData
+import com.google.android.gms.location.Geofence
 
 
 interface GeofenceDataProvider {
@@ -13,11 +15,6 @@ interface GeofenceDataProvider {
      */
     suspend fun shouldAddGeofence() : Boolean
 
-    /**
-     * Method to get the list of geofences to be added.
-     * The app will implement this to provide custom geofence data.
-     *
-     * @return List of GeofenceData representing the geofences to be managed.
-     */
-    suspend fun getGeofenceData(): List<GeofenceData>
+    suspend fun getStoreGeofenceData(): StoreGeofenceData
+
 }

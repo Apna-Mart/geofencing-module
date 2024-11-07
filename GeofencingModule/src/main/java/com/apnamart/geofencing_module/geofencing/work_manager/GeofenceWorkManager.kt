@@ -5,6 +5,9 @@ import android.util.Log
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants.TAG
+import com.apnamart.geofencing_module.geofencing.library.GeofenceModule
+import com.apnamart.geofencing_module.geofencing.library.GeofenceModule.coroutineScope
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 
@@ -17,6 +20,7 @@ class WorkManagerInitializer(private val context: WeakReference<Context>) {
                 Log.e(TAG, "WorkManager instance already initialised")
                 WorkManager.getInstance(it)
             } catch (e: IllegalStateException) {
+                coroutineScope.launch {  GeofenceModule.getEventHandler()?.onFailure(e) }
                 Log.e(TAG, "WorkManager not initialized: ${e.message}")
                 initializeWorkManager(it)
                 WorkManager.getInstance(it)
@@ -34,6 +38,7 @@ class WorkManagerInitializer(private val context: WeakReference<Context>) {
             )
             Log.e(TAG, "WorkManager initialized successfully")
         } catch (e: IllegalStateException) {
+            coroutineScope.launch {  GeofenceModule.getEventHandler()?.onFailure(e) }
             Log.e(TAG, "Failed to initialize WorkManager: ${e.message}")
         }
     }

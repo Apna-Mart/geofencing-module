@@ -1,5 +1,6 @@
 package com.apnamart.geofencing_module.geofencing.data
 
+import com.apnamart.geofencing_module.geofencing.core.GeofenceConstants
 import com.google.android.gms.location.Geofence
 
 /**
@@ -44,4 +45,31 @@ data class GeofenceData(
     }
 }
 
+data class StoreGeofenceData(
+    val requestId: String,
+    val latitude: Double,
+    val longitude: Double,
+    val enteringRadius: Float,
+    val exitRadius : Float
+)
+
+fun getGeofenceData(storeGeofenceData: StoreGeofenceData): List<GeofenceData> {
+    return listOf(
+        GeofenceData(
+            requestId = "${storeGeofenceData.requestId} ${GeofenceConstants.MARK_OUT_RADIUS}",
+            radius = storeGeofenceData.exitRadius,
+            latitude = storeGeofenceData.latitude,
+            longitude = storeGeofenceData.longitude,
+            transitionType = Geofence.GEOFENCE_TRANSITION_EXIT
+        ),
+        GeofenceData(
+            requestId = "${storeGeofenceData.requestId} ${GeofenceConstants.REACHED_STORE_RADIUS}",
+            radius = storeGeofenceData.enteringRadius,
+            latitude = storeGeofenceData.latitude,
+            longitude = storeGeofenceData.longitude,
+            delay = 1 * 1000,
+            transitionType = Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL
+        )
+    )
+}
 
