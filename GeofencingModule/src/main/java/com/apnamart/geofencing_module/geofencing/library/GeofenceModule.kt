@@ -82,8 +82,7 @@ object GeofenceModule {
 
         val pendingIntent = createPendingIntent(context, GeofenceBroadcastReceiver::class.java, GeofenceConstants.GEO_LOCATION_INTENT_ACTION)
 
-        geofenceManager?.removeAllGeofences(pendingIntent,
-            onSuccess = {
+        geofenceManager?.removeAllGeofences(pendingIntent, onSuccess = {
                 onSuccess()
             }, onFailure =  { e ->
                 onFailure(e)

@@ -28,7 +28,6 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         eventHandler = GeofenceModule.getEventHandler() ?: return
-
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
 
         if (geofencingEvent == null) {
@@ -41,9 +40,16 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             return
         }
 
-        val triggeringGeofences = geofencingEvent.triggeringGeofences ?: return
+        val triggeringGeofences = geofencingEvent.triggeringGeofences
         val transitionType = geofencingEvent.geofenceTransition
 
+        if (triggeringGeofences == null){
+            coroutineScope.launch { eventHandler?.onGeofenceError("no triggering Geofence in geofence event") }
+            return
+        }
+
+        //TODO : this has support of only catering to a single geofence, and
+        // assuming it as the point of truth, as we are only providing a single geofence's data, bt need to add a support of multiple geofences with different lat long later
         val triggeringLocation = createLocation(
             TRIGGERING_GEOFENCE,
             geofencingEvent.triggeringLocation?.latitude ?: 0.0,
