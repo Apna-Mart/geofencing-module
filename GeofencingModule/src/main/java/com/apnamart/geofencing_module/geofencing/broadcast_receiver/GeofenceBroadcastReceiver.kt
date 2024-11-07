@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     private var eventHandler: GeofenceEventHandler? = null
-    
+
     override fun onReceive(context: Context, intent: Intent) {
         eventHandler = GeofenceModule.getEventHandler() ?: return
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
