@@ -29,6 +29,11 @@ class GeofenceManagerImpl(private val context: Context) : GeofenceManager {
     ) {
             val geofenceList = createGeofenceList(geofences, onFailure)
 
+            if (geofenceList.isEmpty()){
+                onFailure(IllegalStateException("geofence list is empty"))
+                return
+            }
+
             val geofencingRequest = GeofencingRequest.Builder()
                 .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER or GeofencingRequest.INITIAL_TRIGGER_DWELL or GeofencingRequest.INITIAL_TRIGGER_EXIT)
                 .addGeofences(geofenceList)
