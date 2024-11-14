@@ -17,4 +17,5 @@ interface GeofenceDataProvider {
 
     suspend fun getStoreGeofenceData(): StoreGeofenceData
 
+    fun getTemporaryGeofenceDisableTimeInHours(): Long
 }

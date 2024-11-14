@@ -15,12 +15,15 @@ import com.apnamart.geofencing_module.geofencing.core.GeofenceManagerImpl
 import com.apnamart.geofencing_module.geofencing.event_handler.GeofenceEventHandler
 import com.apnamart.geofencing_module.geofencing.provider.GeofenceDataProvider
 import com.apnamart.geofencing_module.geofencing.work_manager.AddGeofenceWorker
+import com.apnamart.geofencing_module.geofencing.work_manager.ScheduleGeofenceWorker
 import com.apnamart.geofencing_module.geofencing.work_manager.WorkManagerInitializer
+import com.apnamart.geofencing_module.geofencing.work_manager.worker_utils.scheduleOneTimeWorkerWithInitialDelay
 import com.apnamart.geofencing_module.geofencing.work_manager.worker_utils.scheduleOneTimeWorkerWithOutData
 import com.apnamart.geofencing_module.geofencing.work_manager.worker_utils.schedulePeriodicWorkerWithConstraints
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
@@ -83,7 +86,7 @@ object GeofenceModule {
         return geofenceManager
     }
 
-    suspend fun cancelGeofenceWorkers(context: Context, onSuccess : () -> Unit, onFailure : (Exception) -> Unit) {
+    suspend fun disableGeofences(context: Context, onSuccess : () -> Unit, onFailure : (Exception) -> Unit) {
 
         val pendingIntent = createPendingIntent(context, GeofenceBroadcastReceiver::class.java, GeofenceConstants.GEO_LOCATION_INTENT_ACTION)
 
@@ -95,6 +98,37 @@ object GeofenceModule {
 
         workManager?.cancelAllWorkByTag(GeofenceConstants.GEOFENCE_SERVICE_WORKER_JOB)
     }
+
+        fun scheduleGeofenceAfterDelayedTime(context: Context, onFailure: (Exception) -> Unit){
+        coroutineScope.launch {
+            disableGeofences(
+                context,
+                onSuccess = {
+                    val delayHours =
+                        getGeofenceDataProvider()?.getTemporaryGeofenceDisableTimeInHours() ?: 6
+                    val constraints = Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build()
+                    workManager?.let {
+                        scheduleOneTimeWorkerWithInitialDelay(
+                            it,
+                            GeofenceConstants.SCHEDULE_WORKER_AFTER_INITIAL_DELAY_ONE_TIME_WORKER_JOB,
+                            GeofenceConstants.SCHEDULE_WORKER_AFTER_INITIAL_DELAY_ONE_TIME_WORKER,
+                            ExistingWorkPolicy.REPLACE,
+                            ScheduleGeofenceWorker::class.java,
+                            constraints,
+                            delayHours,
+                            TimeUnit.HOURS
+                        )
+                    }
+                },
+                onFailure = { e ->
+                    onFailure(e)
+                }
+            )
+        }
+    }
+
 
     suspend fun addGeofence() {
         val constraints = Constraints.Builder()

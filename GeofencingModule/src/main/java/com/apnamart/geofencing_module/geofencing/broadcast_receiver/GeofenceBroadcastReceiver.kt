@@ -55,7 +55,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
          GeofenceModule.coroutineScope.launch {
              // we use the first of the list as, there is only going be one geofence triggered for one transition
              val triggeredGeofence = GeofenceData(
-                 requestId = triggeringGeofences.first().requestId,
+                 requestId = triggeringGeofences.joinToString{ it.requestId },
                  latitude = triggeringGeofences.first().latitude,
                  longitude = triggeringGeofences.first().longitude,
                  radius = triggeringGeofences.first().radius,
