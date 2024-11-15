@@ -105,7 +105,7 @@ object GeofenceModule {
                 context,
                 onSuccess = {
                     val delayTime =
-                        getGeofenceDataProvider()?.getTemporaryGeofenceDisableTimeInHours() ?: Pair<Long, TimeUnit>(6, TimeUnit.HOURS)
+                        getGeofenceDataProvider()?.getTemporaryGeofenceDisableTime() ?: Pair<Long, TimeUnit>(6, TimeUnit.HOURS)
 
                     val constraints = Constraints.Builder()
                         .setRequiredNetworkType(NetworkType.CONNECTED)
