@@ -104,8 +104,9 @@ object GeofenceModule {
             disableGeofences(
                 context,
                 onSuccess = {
-                    val delayHours =
-                        getGeofenceDataProvider()?.getTemporaryGeofenceDisableTimeInHours() ?: 6
+                    val delayTime =
+                        getGeofenceDataProvider()?.getTemporaryGeofenceDisableTimeInHours() ?: Pair<Long, TimeUnit>(6, TimeUnit.HOURS)
+
                     val constraints = Constraints.Builder()
                         .setRequiredNetworkType(NetworkType.CONNECTED)
                         .build()
@@ -117,8 +118,8 @@ object GeofenceModule {
                             ExistingWorkPolicy.REPLACE,
                             ScheduleGeofenceWorker::class.java,
                             constraints,
-                            delayHours,
-                            TimeUnit.HOURS
+                            delayTime.first,
+                            delayUnit = delayTime.second
                         )
                     }
                 },

@@ -3,6 +3,7 @@ package com.apnamart.geofencing_module.geofencing.provider
 import com.apnamart.geofencing_module.geofencing.data.GeofenceData
 import com.apnamart.geofencing_module.geofencing.data.StoreGeofenceData
 import com.google.android.gms.location.Geofence
+import java.util.concurrent.TimeUnit
 
 
 interface GeofenceDataProvider {
@@ -17,5 +18,5 @@ interface GeofenceDataProvider {
 
     suspend fun getStoreGeofenceData(): StoreGeofenceData
 
-    fun getTemporaryGeofenceDisableTimeInHours(): Long
+    fun getTemporaryGeofenceDisableTimeInHours(): Pair<Long, TimeUnit>
 }
