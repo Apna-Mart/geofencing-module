@@ -50,7 +50,7 @@ data class StoreGeofenceData(
     val latitude: Double,
     val longitude: Double,
     val enteringRadius: Float,
-    val exitRadius : Float
+    val exitRadius: Float
 )
 
 fun getGeofenceData(storeGeofenceData: StoreGeofenceData): List<GeofenceData> {

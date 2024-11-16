@@ -50,7 +50,9 @@ class AddGeofenceWorker(
             ContextCompat.RECEIVER_NOT_EXPORTED
         )
 
-        val storeGeofenceData = geofenceDataProvider.getStoreGeofenceData()
+        val geofenceList = geofenceDataProvider.getGeofenceList().ifEmpty {
+            getGeofenceData(geofenceDataProvider.getStoreGeofenceData())
+        }
 
         val pendingIntent = createPendingIntent(
             context,
@@ -59,7 +61,7 @@ class AddGeofenceWorker(
         )
 
         geofenceManager.removeAndAddGeofences(
-            getGeofenceData(storeGeofenceData),
+           geofenceList,
             onSuccess = {
                 coroutineScope.launch {  geofenceEventHandler.onGeofenceAdded() }
                 Log.e(GeofenceConstants.TAG, "geofence added successfully")
