@@ -21,6 +21,6 @@ interface GeofenceDataProvider {
         return emptyList()
     }
 
-    fun getTemporaryGeofenceDisableTime(): Pair<Long, TimeUnit>
+    fun getTemporaryGeofenceDisableTime(): Pair<Long, TimeUnit> { return Pair(0, TimeUnit.MINUTES)}
 
 }
