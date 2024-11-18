@@ -9,24 +9,6 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
 
-fun scheduleOneTimeWorkerWithInitialDelay(
-    workManager: WorkManager,
-    tag: String,
-    workerName: String,
-    existingWorkPolicy: ExistingWorkPolicy,
-    workerClass: Class<out CoroutineWorker>,
-    constraints: Constraints? = null,
-    delayValue : Long,
-    delayUnit : TimeUnit
-    ) {
-    val worker = OneTimeWorkRequest.Builder(workerClass).apply {
-        setInitialDelay(delayValue,delayUnit )
-        addTag(tag)
-        constraints?.let { setConstraints(it) }
-    }.build()
-    workManager.beginUniqueWork(workerName, existingWorkPolicy, worker).enqueue()
-
-}
 fun scheduleOneTimeWorkerWithOutData(
     workManager: WorkManager,
     tag: String,
