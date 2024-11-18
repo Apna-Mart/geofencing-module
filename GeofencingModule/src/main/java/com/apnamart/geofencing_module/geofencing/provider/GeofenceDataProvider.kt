@@ -1,8 +1,6 @@
 package com.apnamart.geofencing_module.geofencing.provider
 
 import com.apnamart.geofencing_module.geofencing.data.GeofenceData
-import com.apnamart.geofencing_module.geofencing.data.StoreGeofenceData
-import java.util.concurrent.TimeUnit
 
 
 interface GeofenceDataProvider {
@@ -15,12 +13,5 @@ interface GeofenceDataProvider {
      */
     suspend fun shouldAddGeofence(): Boolean
 
-    suspend fun getStoreGeofenceData(): StoreGeofenceData
-
-    suspend fun getGeofenceList(): List<GeofenceData> {
-        return emptyList()
-    }
-
-    fun getTemporaryGeofenceDisableTime(): Pair<Long, TimeUnit> { return Pair(0, TimeUnit.MINUTES)}
-
+    suspend fun getGeofenceList(): List<GeofenceData>
 }
