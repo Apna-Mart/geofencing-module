@@ -8,8 +8,8 @@ object GeofenceConstants {
     const val GEOFENCE_SERVICE_WORKER = "geofence_service_worker"
     const val GEOFENCE_SERVICE_ONE_TIME_WORKER_JOB = "geofence_service_one_time_worker_job"
     const val GEOFENCE_SERVICE_ONE_TIME_WORKER = "geofence_service_one_time_worker"
-    const val SCHEDULE_GEOFENCE_WORKER_AFTER_INITIAL_DELAY_ONE_TIME_WORKER_JOB = "schedule_geofence_worker_after_delay_one_time_worker_job"
-    const val SCHEDULE_GEOFENCE_WORKER_AFTER_INITIAL_DELAY_ONE_TIME_WORKER = "schedule_geofence_worker_after_delay_one_time_worker"
+    const val SCHEDULE_GEOFENCE_WORKER_AFTER_INITIAL_DELAY_ONE_TIME_WORKER_JOB = "schedule_geofence_worker_after_initial_delay_one_time_worker_job"
+    const val SCHEDULE_GEOFENCE_WORKER_AFTER_INITIAL_DELAY_ONE_TIME_WORKER = "schedule_geofence_worker_after_initial_delay_one_time_worker"
 
     const val TAG = "GeofenceModule"
 
