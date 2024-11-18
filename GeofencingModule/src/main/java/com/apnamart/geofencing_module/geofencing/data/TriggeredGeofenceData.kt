@@ -5,7 +5,7 @@ import android.location.Location
 data class TriggeredGeofenceData(
     val triggeringLocation : Location,
     val triggeredGeofence : GeofenceData,
-    val geofenceDistanceFromStore : Float,
-    val currentDistanceFromStore : Float,
+    val geofenceDistanceFromDestination : Float,
+    val currentDistanceFromDestination : Float,
     val currentLocation : Location
 )

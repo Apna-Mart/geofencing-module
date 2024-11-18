@@ -13,6 +13,4 @@ object GeofenceConstants {
 
     const val GEOFENCE_LOCATION = "geofence_location"
     const val TRIGGERING_LOCATION = "triggering_location"
-    const val REACHED_STORE_RADIUS = "reached_store_radius"
-    const val MARK_OUT_RADIUS = "mark_out_radius"
 }
