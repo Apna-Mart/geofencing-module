@@ -82,8 +82,8 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 val triggeredGeofenceData = TriggeredGeofenceData(
                     triggeringLocation = triggeringLocation,
                     triggeredGeofence = geofenceData,
-                    currentDistanceFromStore = currentDistanceFromGeofence,
-                    geofenceDistanceFromStore = geofenceDistanceFromGeofence,
+                    currentDistanceFromDestination = currentDistanceFromGeofence,
+                    geofenceDistanceFromDestination = geofenceDistanceFromGeofence,
                     currentLocation = currentLocation
                 )
 
@@ -104,7 +104,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         when (transitionType) {
             Geofence.GEOFENCE_TRANSITION_ENTER -> {
                 val geofenceList =
-                    triggeredGeofenceList.filter { triggeredGeofenceData -> triggeredGeofenceData.currentDistanceFromStore <= triggeredGeofenceData.triggeredGeofence.radius }
+                    triggeredGeofenceList.filter { triggeredGeofenceData -> triggeredGeofenceData.currentDistanceFromDestination <= triggeredGeofenceData.triggeredGeofence.radius }
                         .ifEmpty {
                             return
                         }
@@ -113,7 +113,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
             Geofence.GEOFENCE_TRANSITION_EXIT -> {
                 val geofenceList =
-                    triggeredGeofenceList.filter { triggeredGeofenceData -> triggeredGeofenceData.currentDistanceFromStore > triggeredGeofenceData.triggeredGeofence.radius }
+                    triggeredGeofenceList.filter { triggeredGeofenceData -> triggeredGeofenceData.currentDistanceFromDestination > triggeredGeofenceData.triggeredGeofence.radius }
                         .ifEmpty {
                             return
                         }
@@ -122,7 +122,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
             Geofence.GEOFENCE_TRANSITION_DWELL -> {
                 val geofenceList =
-                    triggeredGeofenceList.filter { triggeredGeofenceData -> triggeredGeofenceData.currentDistanceFromStore <= triggeredGeofenceData.triggeredGeofence.radius }
+                    triggeredGeofenceList.filter { triggeredGeofenceData -> triggeredGeofenceData.currentDistanceFromDestination <= triggeredGeofenceData.triggeredGeofence.radius }
                         .ifEmpty {
                             return
                         }
