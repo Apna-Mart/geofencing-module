@@ -83,15 +83,23 @@ object GeofenceModule {
         return geofenceManager
     }
 
-    suspend fun cancelGeofenceWorkers(context: Context, onSuccess : () -> Unit, onFailure : (Exception) -> Unit) {
+    suspend fun disableGeofences(
+        context: Context,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
 
-        val pendingIntent = createPendingIntent(context, GeofenceBroadcastReceiver::class.java, GeofenceConstants.GEO_LOCATION_INTENT_ACTION)
+        val pendingIntent = createPendingIntent(
+            context,
+            GeofenceBroadcastReceiver::class.java,
+            GeofenceConstants.GEO_LOCATION_INTENT_ACTION
+        )
 
         geofenceManager?.removeAllGeofences(pendingIntent, onSuccess = {
-                onSuccess()
-            }, onFailure =  { e ->
-                onFailure(e)
-            })
+            onSuccess()
+        }, onFailure = { e ->
+            onFailure(e)
+        })
 
         workManager?.cancelAllWorkByTag(GeofenceConstants.GEOFENCE_SERVICE_WORKER_JOB)
     }
@@ -113,7 +121,11 @@ object GeofenceModule {
         }
     }
 
-    fun createPendingIntent(context: Context, receiverClass: Class<*>, action : String): PendingIntent {
+    fun createPendingIntent(
+        context: Context,
+        receiverClass: Class<*>,
+        action: String
+    ): PendingIntent {
         val intent = Intent(context, receiverClass)
         intent.action = action
         return PendingIntent.getBroadcast(

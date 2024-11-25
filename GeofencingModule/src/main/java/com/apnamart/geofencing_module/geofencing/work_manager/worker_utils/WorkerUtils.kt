@@ -16,8 +16,7 @@ fun scheduleOneTimeWorkerWithOutData(
     existingWorkPolicy: ExistingWorkPolicy,
     workerClass: Class<out CoroutineWorker>,
     constraints: Constraints? = null,
-
-    ) {
+) {
     val worker = OneTimeWorkRequest.Builder(workerClass).apply {
         addTag(tag)
         constraints?.let { setConstraints(it) }
