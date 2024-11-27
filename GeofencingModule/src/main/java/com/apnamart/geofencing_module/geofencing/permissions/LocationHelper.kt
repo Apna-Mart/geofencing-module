@@ -8,6 +8,7 @@ import android.location.Location
 import android.os.Build
 import android.os.Looper
 import androidx.annotation.RequiresApi
+import com.google.android.gms.location.Granularity
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -88,9 +89,15 @@ object LocationHelper {
         onFailure :(Exception) -> Unit
     ): Flow<Location?> = callbackFlow() {
 
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY , 10000)
-            .setMaxUpdates(1)
-            .build()
+        val locationRequest: LocationRequest =
+            LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
+                .setMinUpdateIntervalMillis(2000)
+                .setMaxUpdateAgeMillis(30000)
+                .setGranularity(Granularity.GRANULARITY_FINE)
+                .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                .setMinUpdateDistanceMeters(10f)
+                .setWaitForAccurateLocation(true)
+                .build()
 
         val listener = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
@@ -99,7 +106,10 @@ object LocationHelper {
                     close()
                 }
                 locationResult.locations.lastOrNull()?.let { location ->
-                    trySend(location)
+                    if (location.accuracy <= 30) {
+                        trySend(location)
+                        close()
+                    }
                 }
             }
         }
