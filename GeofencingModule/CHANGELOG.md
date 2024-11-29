@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
   -->
 
-## [1.5.0] 2024-09-18
+## [1.6.0] 2024-11-27
+### Fixed
+- Location accuracy
+
+## [1.5.0] 2024-11-14
 ### Added
 - added a fn to pass geofence list and added a support for all triggered geofence in broadcast receiver
