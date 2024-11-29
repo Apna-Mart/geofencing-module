@@ -41,7 +41,7 @@ class GeofenceManagerImpl(private val context: Context) : GeofenceManager {
 
             geofencingClient.addGeofences(geofencingRequest, pendingIntent).apply {
                 addOnSuccessListener {
-                    Log.e(TAG, "geofence added successfully")
+                    Log.e(TAG, "geofence added successfully ${geofencingRequest.geofences}")
                     onSuccess()
                 }
                 addOnFailureListener { onFailure(it) }
