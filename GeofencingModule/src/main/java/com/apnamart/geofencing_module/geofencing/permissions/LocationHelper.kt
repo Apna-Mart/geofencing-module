@@ -92,10 +92,9 @@ object LocationHelper {
         val locationRequest: LocationRequest =
             LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
                 .setMinUpdateIntervalMillis(2000)
-                .setMaxUpdateAgeMillis(30000)
+                .setMaxUpdateAgeMillis(60000)
                 .setGranularity(Granularity.GRANULARITY_FINE)
                 .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-                .setMinUpdateDistanceMeters(10f)
                 .setWaitForAccurateLocation(true)
                 .build()
 
@@ -106,7 +105,7 @@ object LocationHelper {
                     close()
                 }
                 locationResult.locations.lastOrNull()?.let { location ->
-                    if (location.accuracy <= 30) {
+                    if (location.accuracy <= 90) {
                         trySend(location)
                         close()
                     }
