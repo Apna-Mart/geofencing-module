@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Security
   -->
+## [1.7.0] 2024-12-12
+### Fixed
+- Fetch location improvements
 
 ## [1.6.0] 2024-11-27
 ### Fixed
