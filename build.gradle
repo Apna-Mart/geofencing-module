@@ -1,21 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    repositories {
-        maven {
-            setUrl("https://jitpack.io")
-            content {
-                includeGroup("com.github.aasitnikov")
-            }
-        }
-
-        mavenCentral()
-        google() //Add this line.
-    }
-    dependencies {
-//        classpath libs.fat.aar
-        classpath libs.gradle.v851
-    }
-}
+// buildscript block removed — plugin classpath is declared via plugins {} block below,
+// and repositories are declared in settings.gradle dependencyResolutionManagement.
 
 plugins {
     alias(libs.plugins.android.application) apply false
@@ -23,10 +8,4 @@ plugins {
     alias(libs.plugins.android.library) apply false
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://jitpack.io" }
-    }
-}
+// allprojects repositories removed — declared in settings.gradle dependencyResolutionManagement

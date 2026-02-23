@@ -167,4 +167,62 @@ object LocationHelper {
             null
         }
     }
+
+    /**
+     * Returns a continuous stream of location updates at the given interval.
+     * Unlike [getLastLocation], this Flow never closes on its own — it keeps
+     * emitting until the collector's scope is cancelled or [close] is called.
+     *
+     * @param context      Application context.
+     * @param intervalMs   How often to receive updates (milliseconds). Default 10 seconds.
+     * @param onFailure    Called if location settings check or updates registration fails.
+     */
+    @SuppressLint("MissingPermission")
+    fun getLocationUpdates(
+        context: Context,
+        intervalMs: Long = 10_000L,
+        onFailure: (Exception) -> Unit
+    ): Flow<Location> = callbackFlow {
+
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, intervalMs)
+            .setMinUpdateIntervalMillis(intervalMs)
+            .setGranularity(Granularity.GRANULARITY_FINE)
+            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+            .build()
+
+        val listener = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
+                locationResult.locations.lastOrNull()?.let { location ->
+                    trySend(location)
+                    // intentionally no close() here — stream continues until scope is cancelled
+                }
+            }
+        }
+
+        getLocationClient(context).checkLocationSettings(
+            LocationSettingsRequest.Builder().addLocationRequest(locationRequest).build()
+        ).addOnSuccessListener {
+            try {
+                LocationServices.getFusedLocationProviderClient(context).requestLocationUpdates(
+                    locationRequest,
+                    listener,
+                    Looper.getMainLooper()
+                ).addOnFailureListener { e ->
+                    onFailure(e)
+                    close(e)
+                }
+            } catch (e: Exception) {
+                onFailure(e)
+                close(e)
+            }
+        }.addOnFailureListener { e ->
+            onFailure(e)
+            close(e)
+        }
+
+        awaitClose {
+            LocationServices.getFusedLocationProviderClient(context).removeLocationUpdates(listener)
+        }
+    }
 }
